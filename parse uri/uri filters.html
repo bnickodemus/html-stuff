@@ -1,0 +1,97 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+
+<div class="tabs">
+	tab content goes here:</br></br>
+	
+  - display dynamic content based on if a page is specified ex.<br/>
+  - collections/electronics/products/product_page1?page=specs<br/><br/>
+	
+  uri filters (append the following text to the url:<br/></br>
+	
+  ?page=specs<br/>
+  ?page=perf-data<br/>
+  ?page=manuals<br/>
+	
+	<div id="specifications"></div>
+	<div id="technical-media"></div> <!-- aka perf data-->
+</div>
+
+<script>
+  // Parse the URL parameter
+  function getParameterByName(name, url) {
+    if (!url) 
+			url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"), results = regex.exec(url);
+		if (!results) 
+			return null;
+		if (!results[2])
+			return '';
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+  /*
+  how is Technical Media tab name determined?
+  if has tech media metafield:
+    if has performance image
+      Performance Data
+    else if has step image
+      Manuals & Models
+    else
+      Manuals
+  */
+  var dynamicContent = getParameterByName('page');
+  $(document).ready(function() {
+    try
+		{
+      var tabs = document.getElementsByClassName('tabs');
+			console.log(dynamicContent);
+			
+			if (dynamicContent == 'specs')
+			{
+        if (document.getElementById("technical-media")) {
+          var perfStr = (``);
+          if (perfStr == "") {
+            console.log("no perf data"); // esc or other
+            tabs[0].innerHTML = 'specs page context';
+          } else {
+            console.log("perf data found"); // motor
+            tabs[0].innerHTML = '<div>product tabs</div>';
+          }
+        } else { // dms has overview and specs
+          if (document.getElementById("specifications")) {
+            tabs[0].innerHTML = '<div>specs</div>';
+          }
+        }
+        tabs[0].parentNode.getElementsByClassName('tabs')[0].className = '';//.removeChild(hrTag);
+      }
+			else if (dynamicContent == 'perf-data')
+			{
+          var perfStr = (``);
+          if (perfStr != "") {
+            tabs[0].innerHTML = "<div>perf-data</div>"
+          }
+					console.log("here");
+      }
+			else if (dynamicContent == 'manuals')
+			{
+          var perfStr = (``);
+          if (perfStr != "") {
+            tabs[0].innerHTML = '';
+            tabs[0].innerHTML = 'manuals';
+          } else {
+            tabs[0].innerHTML = '';
+					}
+      }
+    }
+    catch(err)
+		{
+    }
+  });
+</script>
+
+<script>
+</html>
+
